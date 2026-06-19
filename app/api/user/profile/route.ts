@@ -51,6 +51,7 @@ export async function PUT(req: Request) {
   try {
     const body = await req.json();
     const {
+      verificationType,
       gender,
       dateOfBirth,
       phone,
@@ -66,16 +67,17 @@ export async function PUT(req: Request) {
     const updated = await prisma.user.update({
       where: { id: payload.userId },
       data: {
-        gender,
-        dateOfBirth,
-        phone,
-        address,
-        city,
-        state,
-        country,
-        pincode,
-        occupation,
-        nationality,
+        ...(verificationType !== undefined && { verificationType }),
+        ...(gender !== undefined && { gender }),
+        ...(dateOfBirth !== undefined && { dateOfBirth }),
+        ...(phone !== undefined && { phone }),
+        ...(address !== undefined && { address }),
+        ...(city !== undefined && { city }),
+        ...(state !== undefined && { state }),
+        ...(country !== undefined && { country }),
+        ...(pincode !== undefined && { pincode }),
+        ...(occupation !== undefined && { occupation }),
+        ...(nationality !== undefined && { nationality }),
       },
     });
 
@@ -85,6 +87,7 @@ export async function PUT(req: Request) {
         id: updated.id,
         name: updated.name,
         email: updated.email,
+        verificationType: updated.verificationType,
         gender: updated.gender,
         address: updated.address,
         city: updated.city,

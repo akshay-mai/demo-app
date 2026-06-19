@@ -7,6 +7,7 @@ interface User {
   id: number;
   name: string;
   email: string;
+  verificationType?: string;
   gender?: string;
   address?: string;
   city?: string;
@@ -129,6 +130,15 @@ export default function DashboardPage() {
               </svg>
             </div>
             <span className="text-xl font-bold text-gray-900">KYC Demo</span>
+            {user?.verificationType && (
+              <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${
+                user.verificationType === "KYB"
+                  ? "bg-purple-100 text-purple-700"
+                  : "bg-blue-100 text-blue-700"
+              }`}>
+                {user.verificationType === "KYB" ? "Business (KYB)" : "Individual (KYC)"}
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-3">
@@ -270,6 +280,12 @@ export default function DashboardPage() {
           </InfoCard>
 
           <InfoCard icon="💼" title="Additional Info">
+            {user.verificationType && (
+              <InfoRow
+                label="Verify Type"
+                value={user.verificationType === "KYB" ? "Business (KYB)" : "Individual (KYC)"}
+              />
+            )}
             {user.occupation && <InfoRow label="Occupation" value={user.occupation} />}
             {user.nationality && <InfoRow label="Nationality" value={user.nationality} />}
             <InfoRow

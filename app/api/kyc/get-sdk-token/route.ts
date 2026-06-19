@@ -15,12 +15,14 @@ export async function POST(req: Request) {
 
   const user = await prisma.user.findUnique({
     where: { id: payload.userId },
-    select: { id: true, email: true },
+    select: { id: true, email: true, verificationType: true },
   });
 
   if (!user) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
+
+  const type = user.verificationType || "KYC";
 
   try {
     const host = req.headers.get("origin") || "http://localhost:3000";
@@ -35,6 +37,7 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         userId: String(user.id),
         email: user.email,
+        type,
         callbackUrl,
       }),
     });

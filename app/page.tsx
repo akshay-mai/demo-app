@@ -35,7 +35,7 @@ export default function RegisterPage() {
       }
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
-      router.push("/complete-profile");
+      router.push("/select-type?next=complete-profile");
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {

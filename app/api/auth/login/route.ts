@@ -25,6 +25,7 @@ export async function POST(req: Request) {
         id: user.id,
         name: user.name,
         email: user.email,
+        verificationType: user.verificationType,
         gender: user.gender,
         address: user.address,
         city: user.city,

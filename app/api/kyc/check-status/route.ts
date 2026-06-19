@@ -15,26 +15,30 @@ export async function GET(req: Request) {
 
   const user = await prisma.user.findUnique({
     where: { id: payload.userId },
-    select: { email: true },
+    select: { email: true, verificationType: true },
   });
 
   if (!user) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
+  const type = user.verificationType || "KYC";
+
   try {
-    const res = await fetch(
-      `https://stg-kycapi.p2eppl.com/v1/kyc/checkKycStatus/${encodeURIComponent(user.email)}`,
-      {
-        headers: {
-          accept: "application/json, text/plain, */*",
-          "x-api-key": process.env.KYC_API_KEY || "",
-        },
-      }
+    const url = new URL(
+      `https://stg-kycapi.p2eppl.com/v1/kyc/checkKycStatus/${encodeURIComponent(user.email)}`
     );
+    url.searchParams.set("type", type);
+
+    const res = await fetch(url.toString(), {
+      headers: {
+        accept: "application/json, text/plain, */*",
+        "x-api-key": process.env.KYC_API_KEY || "",
+      },
+    });
 
     const data = await res.json();
-    return NextResponse.json(data);
+    return NextResponse.json({ ...data, verificationType: type });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: "KYC API error" }, { status: 500 });
